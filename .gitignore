@@ -37,4 +37,14 @@ lerna-debug.log*
 /api-gateway/*.pid.lock
 /api-gateway/report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
-# Concerning folder x
+# Concerning indexer service
+/indexer-service/.env
+
+# Concerning uploader service
+/uploader-service/.env
+
+# Concerning retriever service
+/retriever-service/.env
+
+# Concerning storage service
+/storage-service/.env
