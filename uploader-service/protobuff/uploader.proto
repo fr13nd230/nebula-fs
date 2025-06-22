@@ -1,0 +1,22 @@
+syntax="proto3";
+
+package uploader;
+
+option go_package = "/uploader;uploader";
+
+service FileUploader {
+    rpc Upload(stream FileChunk) returns (UploadStatus);
+}
+
+message FileChunk {
+    bytes data = 1;
+    int64 number = 2;
+    optional string file_name = 3;
+    optional string content_type = 4;
+}
+
+message UploadStatus {
+    bool status = 1;
+    string file_id = 2;
+    string message = 3;
+}
