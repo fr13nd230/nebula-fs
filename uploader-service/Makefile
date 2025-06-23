@@ -10,7 +10,7 @@ genpb:
 	
 # Application Commands
 run:
-	@go run ./cmd/main.go
+	@go run ./cmd/.
 build:
 	@go build -o ./bin/uploader ./cmd
 test:

@@ -42,6 +42,7 @@ lerna-debug.log*
 
 # Concerning uploader service
 /uploader-service/.env
+/uploader-service/bin/
 
 # Concerning retriever service
 /retriever-service/.env
