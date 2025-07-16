@@ -4,6 +4,7 @@ import (
 	"net"
 
 	"google.golang.org/grpc"
+	// "google.golang.org/grpc/credentials/alts"
 )
 
 type gRPCServer struct {
@@ -17,6 +18,8 @@ func NewConfig(port string) *gRPCServer {
 }
 
 func (g *gRPCServer) NewGrpcServer() *grpc.Server {
+ //    altsCreds := alts.NewServerCreds(alts.DefaultServerOptions())
+	// return grpc.NewServer(grpc.Creds(altsCreds))
 	return grpc.NewServer()
 }
 

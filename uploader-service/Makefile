@@ -18,16 +18,4 @@ test:
 cleanup:
 	@go mod tidy
 
-# Docker Compose Commands
-cmp-up:
-	@docker compose up -d --build
-cmp-down:
-	@docker compose down -v
-
-# Cache Layer Commands
-startcache:
-	@docker start $(CACHE_CONTAINER)
-stopcache:
-	@docker stop $(CACHE_CONTAINER)
-
-.PHONY: cmp-up cmp-down startcache stopcache
+.PHONY: genpb
