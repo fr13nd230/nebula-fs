@@ -1,0 +1,12 @@
+
+services:
+    gateway:
+    gateway_db:
+    uploader:
+    indexer:
+    indexer_db:
+    indexer_cache:
+    storage:
+    storage_db:
+    storage_cache:
+    retriever:
