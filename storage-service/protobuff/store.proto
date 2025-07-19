@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package storage;
+
+option go_package = "/storage;storage";
+
+service StorageService {
+    rpc Store(stream FileChunk) returns (StorageResponse);
+}
+
+message FileChunk {
+    bytes data = 1;
+    string id = 2;
+    int64 number = 3;
+    string userId = 4;
+    optional string filename = 5;
+}
+
+message StorageResponse {
+    bool status = 1;
+    string file_id = 2;
+    int64 node = 3;
+    string message = 4;
+}

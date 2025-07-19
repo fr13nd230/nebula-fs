@@ -1,12 +1,31 @@
-
 services:
-    gateway:
-    gateway_db:
-    uploader:
-    indexer:
-    indexer_db:
-    indexer_cache:
-    storage:
+    # gateway:
+    # gateway_db:
+    # uploader:
+    # indexer:
+    # indexer_db:
+    # indexer_cache:
+    # storage:
     storage_db:
-    storage_cache:
-    retriever:
+        image: postgres:alpine
+        shm_size: 128mb
+        container_name: storage-db
+        hostname: storage-db
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready"]
+            interval: 5s
+            timeout: 15s
+            retries: 5
+        volumes:
+            - storage-pgdata:/var/lib/postgresql/data
+        ports:
+            - "5432:5432"
+        env_file:
+            - ./storage-service/.env
+    
+    # storage_cache:
+    # retriever:
+
+volumes:
+    storage-pgdata:

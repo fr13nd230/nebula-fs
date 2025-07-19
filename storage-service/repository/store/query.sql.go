@@ -7,42 +7,17 @@ package store
 
 import (
 	"context"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const getAllFiles = `-- name: GetAllFiles :many
-select id, user_id, filename, mime_type, total_size, chunk_count, created_at from files
-limit $1 offset $2
+const healthCheck = `-- name: HealthCheck :one
+select (current_timestamp - pg_postmaster_start_time())::interval
 `
 
-type GetAllFilesParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
-}
-
-func (q *Queries) GetAllFiles(ctx context.Context, arg GetAllFilesParams) ([]File, error) {
-	rows, err := q.db.Query(ctx, getAllFiles, arg.Limit, arg.Offset)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []File
-	for rows.Next() {
-		var i File
-		if err := rows.Scan(
-			&i.ID,
-			&i.UserID,
-			&i.Filename,
-			&i.MimeType,
-			&i.TotalSize,
-			&i.ChunkCount,
-			&i.CreatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
+func (q *Queries) HealthCheck(ctx context.Context) (pgtype.Interval, error) {
+	row := q.db.QueryRow(ctx, healthCheck)
+	var column_1 pgtype.Interval
+	err := row.Scan(&column_1)
+	return column_1, err
 }

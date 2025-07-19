@@ -1,3 +1,2 @@
--- name: GetAllFiles :many
-select * from files
-limit $1 offset $2;
+-- name: HealthCheck :one
+select (current_timestamp - pg_postmaster_start_time())::interval;

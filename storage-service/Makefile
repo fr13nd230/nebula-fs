@@ -30,4 +30,10 @@ migdwn:
 sqlcgen:
 	@sqlc generate
 	
+# Docker Commands
+startdb:
+	@docker start $(CONTAINER_NAME)
+stopdb:
+	@docker stop $(CONTAINER_NAME)
+
 .PHONY: genpb sqlcgen

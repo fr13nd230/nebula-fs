@@ -7,7 +7,11 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/fr13nd230/nebula-fs/storage-service/cmd/handler"
+	"github.com/fr13nd230/nebula-fs/storage-service/cmd/service"
 	"github.com/fr13nd230/nebula-fs/storage-service/config"
+	"github.com/fr13nd230/nebula-fs/storage-service/grpc/storage"
+	"github.com/fr13nd230/nebula-fs/storage-service/repository/store"
 	"go.uber.org/zap"
 )
 
@@ -32,10 +36,27 @@ func main() {
 		sg.Error("[ServiceStorage]: Missing port variable for GRPC server.")
 		return
 	}
+	drvPath := config.GetVar("PSQL_DRIVER_PATH")
+	if strings.Trim(drvPath, " ") == " " {
+		sg.Error("[ServiceStorage]: Missing database driver path variable for GRPC server.")
+		return
+	}
+
+	q, err := store.NewDB(drvPath)
+	if err != nil {
+		sg.Errorw("[StorageService]: Service has failed, no database connection.", "error", err)
+		return
+	}
 
 	gCfg := NewgRPConfig(port)
 	grpcServ := gCfg.NewGRPCServer()
 	grpcErr := make(chan error, 1)
+	defer close(grpcErr)
+
+	s := service.NewStorageService(q, sg)
+	h := handler.NewStorageHandler(sg, s)
+
+	storage.RegisterStorageServiceServer(grpcServ, h)
 
 	go func() {
 		grpcErr <- gCfg.StartGRPCServer(grpcServ)
@@ -51,6 +72,7 @@ func main() {
 		grpcServ.GracefulStop()
 		sg.Info("[StorageService]: Service servers has been shutdown succesfully.")
 	case err := <-grpcErr:
+		sg.Debug("ERR CHAN CAUSED THIS INFINITE WAIT BLOCK")
 		sg.Infow("[StorageService]: gRPC Server has faced some troules preparing for gracefull shutdown.", "error", err)
 		grpcServ.GracefulStop()
 		sg.Info("[StorageService]: Service servers has been shutdown succesfully.")
